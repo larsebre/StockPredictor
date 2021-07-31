@@ -19,9 +19,11 @@ class StockData:
     def calculate_technical_indicators(self):
         self.df_data = ta.utils.dropna(self.df_data)
         self.df_data['MFI'] = ta.volume.MFIIndicator(high=self.df_data['High'], low=self.df_data['Low'], close=self.df_data['Close'], volume=self.df_data['Volume']).money_flow_index()
-        self.df_data['SMA30'] = ta.trend.SMAIndicator(close=self.df_data['Close'], window=30).sma_indicator()
+        self.df_data['ADI'] = ta.volume.AccDistIndexIndicator(high=self.df_data['High'], low=self.df_data['Low'], close=self.df_data['Close'], volume=self.df_data['Volume']).acc_dist_index() 
+        self.df_data['SMA20'] = ta.trend.SMAIndicator(close=self.df_data['Close'], window=20).sma_indicator()
+        self.df_data['CCI20'] = ta.trend.CCIIndicator(high=self.df_data['High'], low=self.df_data['Low'], close=self.df_data['Close'], window=20, constant=0.015).cci()
         self.df_data['RSI'] = ta.momentum.RSIIndicator(close=self.df_data['Close']).rsi()
-        self.df_data = self.df_data[['Close', 'MFI', 'SMA30', 'RSI']]
+        self.df_data = self.df_data[['Close', 'ADI', 'MFI', 'SMA20', 'CCI20', 'RSI']]
 
     #Used to predict 
     def set_last_day_data(self):
