@@ -13,10 +13,12 @@ class StockData:
         self.start_date = self.end_date - datetime.timedelta(days=data_days)
         self.df_x_data = pd.DataFrame()
         self.df_y_data = pd.DataFrame()
-        self.df_dow_jones = data.DataReader('^DJI', 'yahoo', self.start_date, self.end_date)
-        self.df_SP500 = data.DataReader('^GSPC', 'yahoo', self.start_date, self.end_date)
         self.num_prediction_inputs = 3
         self.prediction_inputs = pd.DataFrame()
+    
+    def add_stock_index_data(self, DOW_JONES, SP500):
+        self.df_dow_jones = DOW_JONES
+        self.df_SP500 = SP500
 
     def set_stock_data(self):
         self.df_x_data = data.DataReader(self.TICKER, 'yahoo', self.start_date, self.end_date)
@@ -49,19 +51,18 @@ class StockData:
         self.df_y_data = self.df_x_data[['Price Change']]
         self.df_x_data.drop(columns='Price Change', inplace=True)
     
-    #Returns a numpy array to be used for training
+    #Returns a numpy array to be used for training and predictions
     def get_X_data(self):
-        self.df_x_data = self.df_x_data.append(self.prediction_inputs)
-        return self.df_x_data.to_numpy()
+        return self.df_x_data.append(self.prediction_inputs).to_numpy()
 
     #Returns a numpy array of 0,1,2 depending on the 'Price Change': 
     #0 -> Price Change < 0.05, 1 -> 0.05 <= Price Change
-    def get_Y_data(self):
+    def get_Y_data(self, price_change):
         classes = []
         for change in self.df_y_data[['Price Change']].to_numpy():
-            if (change[0] < 0.1):
+            if (change[0] < price_change):
                 classes.append(0)
-            elif (change[0] >= 0.1):
+            elif (change[0] >= price_change):
                 classes.append(1)
         return np.array(classes)
     
