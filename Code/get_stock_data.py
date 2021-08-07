@@ -6,11 +6,11 @@ import ta
 
 
 class StockData:
-    def __init__(self, ticker, data_days, forecast):
+    def __init__(self, ticker, forecast, start_date, end_date):
         self.TICKER = ticker
         self.days_forecast = forecast
-        self.end_date = datetime.datetime.now()
-        self.start_date = self.end_date - datetime.timedelta(days=data_days)
+        self.start_date = start_date
+        self.end_date = end_date
         self.df_x_data = pd.DataFrame()
         self.df_y_data = pd.DataFrame()
         self.num_prediction_inputs = 3
@@ -25,17 +25,32 @@ class StockData:
 
     def calculate_technical_indicators(self):
         self.df_x_data = ta.utils.dropna(self.df_x_data)
-        self.df_x_data['MFI'] = ta.volume.MFIIndicator(high=self.df_x_data['High'], low=self.df_x_data['Low'], close=self.df_x_data['Close'], volume=self.df_x_data['Volume']).money_flow_index()
-        self.df_x_data['ADI'] = ta.volume.AccDistIndexIndicator(high=self.df_x_data['High'], low=self.df_x_data['Low'], close=self.df_x_data['Close'], volume=self.df_x_data['Volume']).acc_dist_index() 
-        self.df_x_data['SMA20'] = ta.trend.SMAIndicator(close=self.df_x_data['Close'], window=20).sma_indicator()
-        self.df_x_data['CCI20'] = ta.trend.CCIIndicator(high=self.df_x_data['High'], low=self.df_x_data['Low'], close=self.df_x_data['Close'], window=20, constant=0.015).cci()
-        self.df_x_data['MACD'] = ta.trend.MACD(close=self.df_x_data['Close']).macd()
-        self.df_x_data['RSI'] = ta.momentum.RSIIndicator(close=self.df_x_data['Close']).rsi()
-        self.df_x_data['DOW JONES Close'] = self.df_dow_jones['Close']
-        self.df_x_data['DOW JONES SMA20'] = ta.trend.SMAIndicator(close=self.df_dow_jones['Close'], window=20).sma_indicator()
-        self.df_x_data['S&P 500 Close'] = self.df_SP500['Close']
-        self.df_x_data['DOW JONES SMA20'] = ta.trend.SMAIndicator(close=self.df_SP500['Close'], window=20).sma_indicator()
-        self.df_x_data = self.df_x_data[['Close', 'ADI', 'MFI', 'SMA20', 'CCI20', 'MACD', 'RSI', 'DOW JONES Close', 'DOW JONES SMA20', 'S&P 500 Close', 'DOW JONES SMA20']]
+        self.df_x_data['SMA20'] = ta.trend.SMAIndicator(close=self.df_x_data['Adj Close'], window=20).sma_indicator()
+        self.df_x_data['SMA20 PREV 1 WEEK'] = self.df_x_data['SMA20'].shift(periods=5)
+        self.df_x_data['SMA20 PREV 2 WEEK'] = self.df_x_data['SMA20'].shift(periods=10)
+        self.df_x_data['SMA20 PREV 3 WEEK'] = self.df_x_data['SMA20'].shift(periods=15)
+        self.df_x_data['SMA20 PREV 4 WEEK'] = self.df_x_data['SMA20'].shift(periods=20)
+        self.df_x_data['Adj Close PREV 1 WEEK'] = self.df_x_data['Adj Close'].shift(periods=5)
+        self.df_x_data['Adj Close PREV 2 WEEK'] = self.df_x_data['Adj Close'].shift(periods=10)
+        self.df_x_data['Adj Close PREV 3 WEEK'] = self.df_x_data['Adj Close'].shift(periods=15)
+        self.df_x_data['Adj Close PREV 4 WEEK'] = self.df_x_data['Adj Close'].shift(periods=20)
+        self.df_x_data['MACD'] = ta.trend.MACD(close=self.df_x_data['Adj Close']).macd()
+        self.df_x_data['MACD PREV 1 WEEK'] = self.df_x_data['MACD'].shift(periods=5)
+        self.df_x_data['MACD PREV 2 WEEK'] = self.df_x_data['MACD'].shift(periods=10)
+        self.df_x_data['MACD PREV 3 WEEK'] = self.df_x_data['MACD'].shift(periods=15)
+        self.df_x_data['MACD PREV 4 WEEK'] = self.df_x_data['MACD'].shift(periods=20)
+        self.df_x_data['DOW JONES Close'] = self.df_dow_jones['Adj Close']
+        self.df_x_data['DOW JONES SMA20'] = ta.trend.SMAIndicator(close=self.df_dow_jones['Adj Close'], window=20).sma_indicator()
+        self.df_x_data['S&P 500 Close'] = self.df_SP500['Adj Close']
+        self.df_x_data['S&P 500 SMA20'] = ta.trend.SMAIndicator(close=self.df_SP500['Adj Close'], window=20).sma_indicator()
+
+        # Make new data frame for analysis
+        self.df_x_data = self.df_x_data[[   'Adj Close', 'Adj Close PREV 1 WEEK', 'Adj Close PREV 2 WEEK', 'Adj Close PREV 3 WEEK', 'Adj Close PREV 4 WEEK',
+                                            'SMA20', 'SMA20 PREV 1 WEEK', 'SMA20 PREV 2 WEEK', 'SMA20 PREV 3 WEEK', 'SMA20 PREV 4 WEEK', 
+                                            'MACD', 'MACD PREV 1 WEEK', 'MACD PREV 2 WEEK', 'MACD PREV 3 WEEK', 'MACD PREV 4 WEEK', 
+                                            'DOW JONES Close', 'DOW JONES SMA20', 
+                                            'S&P 500 Close', 'DOW JONES SMA20']]
+        self.df_x_data = self.df_x_data.dropna()
 
     #Used to predict 
     def set_prediction_inputs(self):
@@ -43,8 +58,8 @@ class StockData:
 
     #Adding the Price Change n traiding days ahead
     def calculate_price_change(self):
-        self.df_x_data['Price Change'] = -self.df_x_data['Close'].diff(periods=-self.days_forecast)
-        self.df_x_data['Price Change'] = self.df_x_data['Price Change']/self.df_x_data['Close']
+        self.df_x_data['Price Change'] = -self.df_x_data['Adj Close'].diff(periods=-self.days_forecast)
+        self.df_x_data['Price Change'] = self.df_x_data['Price Change']/self.df_x_data['Adj Close']
         self.df_x_data = self.df_x_data.dropna()
     
     def split_data_to_x_and_y(self):
@@ -74,7 +89,10 @@ class StockData:
         self.split_data_to_x_and_y()
 
 if __name__ == "__main__":
-    stock_data = StockData('KOA.OL', data_days=365, forecast=20)
+    end_date = datetime.datetime.now()
+    start_date = end_date - datetime.timedelta(days=500)
+
+    stock_data = StockData('KOA.OL', forecast=20, start_date=start_date, end_date=end_date)
     stock_data.initialize()
     stock_data.get_X_data()
     print(stock_data.get_Y_data())

@@ -1,5 +1,7 @@
 import get_stock_data as gsd
+import datetime
 import numpy as np
+from pandas_datareader import data
 from sklearn import svm
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
@@ -28,7 +30,7 @@ class SVMPredictor:
         self.classifier.fit(X_train, Y_train)
         Y_val = self.classifier.predict(X_test)
         score = accuracy_score(Y_val, Y_test)
-        if (score >= 0.75):
+        if (score >= 0.90):
             self.model_trust = True
         #print(score)
         #print(confusion_matrix(Y_test, Y_val, labels=[1, 0]))
@@ -40,7 +42,17 @@ class SVMPredictor:
         return predictions
 
 if __name__ == "__main__":
-    predictor = SVMPredictor('EQNR.OL')
+    predictor = SVMPredictor()
+    
+    end_date = datetime.datetime.now()
+    start_date = end_date - datetime.timedelta(days=600)
+    df_dow_jones = data.DataReader('^DJI', 'yahoo', start_date, end_date)
+    df_SP500 = data.DataReader('^GSPC', 'yahoo', start_date, end_date)
+
+    predictor.stock_data = gsd.StockData('YAR.OL', forecast=20, start_date=start_date, end_date=end_date)
+    predictor.stock_data.add_stock_index_data(df_dow_jones, df_SP500)
+    predictor.stock_data.initialize()
+
     predictor.generate_model_data(price_change=0.05)
     predictor.train_and_validate_model()
     list = predictor.get_predicted_price_class()

@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas_datareader import data
-from scipy.optimize import minimize
 
 def portfolio_variance(x, cov):
 
@@ -20,9 +19,9 @@ def expected_return(x, er):
 
 if __name__ == "__main__":
 
-    portfolio =     ['EQNR.OL', 'NEL.OL',   'YAR.OL',   'NHY.OL',   'SSG.OL']
+    portfolio =     ['SNOR.OL', 'SBX.OL',   'YAR.OL',   'MPCC.OL',   'SSG.OL']
     # Expected return single stock
-    er = [0.05,       0.05,       0.05,       0.30,       0.10]
+    er = [0.05,       0.10,       0.05,       0.15,       0.10]
     # Expected portfolio return
     epf = 0.00
 
