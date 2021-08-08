@@ -9,14 +9,14 @@ import svm_predictor
 
 if __name__ == "__main__":
 
-    path = 'TICKERS_USA.xlsx'
-    ticker_list = pd.read_excel('TICKERS_USA.xlsx')['TICKER'].values.tolist()
+    path = 'TICKERS.xlsx'
+    ticker_list = pd.read_excel('TICKERS.xlsx')['TICKER'].values.tolist()
     bull_stocks = {}
 
     predictor = svm_predictor.SVMPredictor()
     
     # Market indeces to be used for all stocks data
-    end_date = datetime.datetime.now() - datetime.timedelta(days=30)
+    end_date = datetime.datetime.now() #- datetime.timedelta(days=30)
     start_date = end_date - datetime.timedelta(days=600)
     print(start_date)
     print(end_date)

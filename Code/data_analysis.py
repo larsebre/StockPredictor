@@ -19,10 +19,10 @@ class DataAnalysis:
     def generate_data(self):
         self.TI = data.DataReader(self.TICKER, 'yahoo', self.start_date, self.end_date)
         self.TI = ta.utils.dropna(self.TI)
-        self.TI['SMA20'] = ta.trend.SMAIndicator(close=self.TI['Adj Close'], window=20).sma_indicator()
+        self.TI['SMA30'] = ta.trend.SMAIndicator(close=self.TI['Adj Close'], window=20).sma_indicator()
         
         mask = (self.TI.index >= (self.end_date  - datetime.timedelta(days=90)))
-        self.price_data = self.TI[['Adj Close', 'SMA20']][mask]
+        self.price_data = self.TI[['Adj Close', 'SMA30']][mask]
         
         self.TI['MFI'] = ta.volume.MFIIndicator(high=self.TI['High'], low=self.TI['Low'], close=self.TI['Adj Close'], volume=self.TI['Volume']).money_flow_index()
         self.TI['ADI'] = ta.volume.AccDistIndexIndicator(high=self.TI['High'], low=self.TI['Low'], close=self.TI['Adj Close'], volume=self.TI['Volume']).acc_dist_index() 
@@ -41,7 +41,7 @@ class DataAnalysis:
         fig.suptitle(self.TICKER)
         
         axs[0].plot(self.price_data)
-        axs[0].legend(['Price', 'SMA20'])
+        axs[0].legend(['Price', 'SMA30'])
 
         min = self.TI[TI].min()
         max = self.TI[TI].max()

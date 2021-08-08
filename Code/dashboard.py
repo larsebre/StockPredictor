@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
+# Run: 'streamlit run dashboard.py'
 
+#Page config
 st.set_page_config(
     page_title="Stock Analysis",
     page_icon="💸",
@@ -13,15 +15,29 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-
+# Get data
 end_date = datetime.datetime.strptime(st.text_input("Enter Date here:   year:month:day", datetime.datetime.now().strftime('%y-%m-%d')), '%y-%m-%d')
 start_date = end_date - datetime.timedelta(days=1000)
 ticker_input = st.text_input("Enter TICKER here: ", "EQNR.OL")
-
-
 analyst = da.DataAnalysis(ticker_input, days_forecast=20, start_date=start_date, end_date=end_date)
 analyst.generate_data()
-st.line_chart(analyst.price_data)
+
+# Print stock price vs SMA
+st.write('Stock Price')
+price_data = analyst.price_data
+price_data['Date'] = analyst.price_data.index
+max = price_data['Adj Close'].max()
+min = price_data['Adj Close'].min()
+range_price = max - min
+price = alt.Chart(price_data).mark_line(color='aquamarine').encode(
+    x='Date',
+    y=alt.Y('Adj Close', scale=alt.Scale(domain=(min - range_price*0.3, max + range_price*0.3))),
+)
+sma = alt.Chart(price_data).mark_line(color='darkorange').encode(
+    x='Date',
+    y=alt.Y('SMA30', scale=alt.Scale(domain=(min - range_price*0.3, max + range_price*0.3))),
+)
+st.write(price + sma)
 
 
 # Scatter plot for ADI/ Price Change and histogram to visualize the data distribution around ADI Now
@@ -52,9 +68,9 @@ min = analyst.TI[TI].min()
 max = analyst.TI[TI].max()
 val_range = (max - min)
 
-mask = (analyst.TI[TI] >= (analyst.TI_past_day[TI].mean() - val_range*0.025))
+mask = (analyst.TI[TI] >= (analyst.TI_past_day[TI].mean() - val_range*0.05))
 TI_hist = analyst.TI[mask]
-mask = (analyst.TI[TI] <= (analyst.TI_past_day[TI].mean() + val_range*0.025))
+mask = (analyst.TI[TI] <= (analyst.TI_past_day[TI].mean() + val_range*0.05))
 TI_hist = TI_hist[mask]
 chart = alt.Chart(TI_hist)
 bar = chart.mark_bar().encode(
