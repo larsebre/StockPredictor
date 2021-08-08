@@ -44,7 +44,7 @@ class SVMPredictor:
 if __name__ == "__main__":
     predictor = SVMPredictor()
     
-    end_date = datetime.datetime.now()
+    end_date = datetime.datetime.now() - datetime.timedelta(days=30)
     start_date = end_date - datetime.timedelta(days=600)
     df_dow_jones = data.DataReader('^DJI', 'yahoo', start_date, end_date)
     df_SP500 = data.DataReader('^GSPC', 'yahoo', start_date, end_date)

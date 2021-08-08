@@ -16,7 +16,7 @@ if __name__ == "__main__":
     predictor = svm_predictor.SVMPredictor()
     
     # Market indeces to be used for all stocks data
-    end_date = datetime.datetime.now() #- datetime.timedelta(days=30)
+    end_date = datetime.datetime.now() - datetime.timedelta(days=60)
     start_date = end_date - datetime.timedelta(days=600)
     print(start_date)
     print(end_date)
@@ -59,5 +59,19 @@ if __name__ == "__main__":
             print('ERROR: Could not calculate for ' + ticker)
         
         i = i + 1
+    
+    # Write suggested stocks to excel file to be read by test_predictor.py
+
+    ticker_list = []
+    price_change = []
+    for ticker in bull_stocks:
+        ticker_list.append(ticker)
+        price_change.append(bull_stocks[ticker])
+    
+    df_results = pd.DataFrame({ 'TICKER' : ticker_list,
+                                'Price Change' : price_change,
+                                'Prediction Date' : [end_date.strftime('20%y-%m-%d')]*len(ticker_list)})
+    df_results.to_excel('suggested_stocks.xlsx')
+
     print(bull_stocks)
     
