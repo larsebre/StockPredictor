@@ -25,11 +25,11 @@ class StockData:
 
     def calculate_technical_indicators(self):
         self.df_x_data = ta.utils.dropna(self.df_x_data)
-        self.df_x_data['SMA20'] = ta.trend.SMAIndicator(close=self.df_x_data['Adj Close'], window=20).sma_indicator()
-        self.df_x_data['SMA20 PREV 1 WEEK'] = self.df_x_data['SMA20'].shift(periods=5)
-        self.df_x_data['SMA20 PREV 2 WEEK'] = self.df_x_data['SMA20'].shift(periods=10)
-        self.df_x_data['SMA20 PREV 3 WEEK'] = self.df_x_data['SMA20'].shift(periods=15)
-        self.df_x_data['SMA20 PREV 4 WEEK'] = self.df_x_data['SMA20'].shift(periods=20)
+        self.df_x_data['SMA30'] = ta.trend.SMAIndicator(close=self.df_x_data['Adj Close'], window=30).sma_indicator()
+        self.df_x_data['SMA30 PREV 1 WEEK'] = self.df_x_data['SMA30'].shift(periods=5)
+        self.df_x_data['SMA30 PREV 2 WEEK'] = self.df_x_data['SMA30'].shift(periods=10)
+        self.df_x_data['SMA30 PREV 3 WEEK'] = self.df_x_data['SMA30'].shift(periods=15)
+        self.df_x_data['SMA30 PREV 4 WEEK'] = self.df_x_data['SMA30'].shift(periods=20)
         self.df_x_data['Adj Close PREV 1 WEEK'] = self.df_x_data['Adj Close'].shift(periods=5)
         self.df_x_data['Adj Close PREV 2 WEEK'] = self.df_x_data['Adj Close'].shift(periods=10)
         self.df_x_data['Adj Close PREV 3 WEEK'] = self.df_x_data['Adj Close'].shift(periods=15)
@@ -40,16 +40,16 @@ class StockData:
         self.df_x_data['MACD PREV 3 WEEK'] = self.df_x_data['MACD'].shift(periods=15)
         self.df_x_data['MACD PREV 4 WEEK'] = self.df_x_data['MACD'].shift(periods=20)
         self.df_x_data['DOW JONES Close'] = self.df_dow_jones['Adj Close']
-        self.df_x_data['DOW JONES SMA20'] = ta.trend.SMAIndicator(close=self.df_dow_jones['Adj Close'], window=20).sma_indicator()
+        self.df_x_data['DOW JONES SMA30'] = ta.trend.SMAIndicator(close=self.df_dow_jones['Adj Close'], window=30).sma_indicator()
         self.df_x_data['S&P 500 Close'] = self.df_SP500['Adj Close']
-        self.df_x_data['S&P 500 SMA20'] = ta.trend.SMAIndicator(close=self.df_SP500['Adj Close'], window=20).sma_indicator()
+        self.df_x_data['S&P 500 SMA30'] = ta.trend.SMAIndicator(close=self.df_SP500['Adj Close'], window=30).sma_indicator()
 
         # Make new data frame for analysis
         self.df_x_data = self.df_x_data[[   'Adj Close', 'Adj Close PREV 1 WEEK', 'Adj Close PREV 2 WEEK', 'Adj Close PREV 3 WEEK', 'Adj Close PREV 4 WEEK',
-                                            'SMA20', 'SMA20 PREV 1 WEEK', 'SMA20 PREV 2 WEEK', 'SMA20 PREV 3 WEEK', 'SMA20 PREV 4 WEEK', 
+                                            'SMA30', 'SMA30 PREV 1 WEEK', 'SMA30 PREV 2 WEEK', 'SMA30 PREV 3 WEEK', 'SMA30 PREV 4 WEEK', 
                                             'MACD', 'MACD PREV 1 WEEK', 'MACD PREV 2 WEEK', 'MACD PREV 3 WEEK', 'MACD PREV 4 WEEK', 
-                                            'DOW JONES Close', 'DOW JONES SMA20', 
-                                            'S&P 500 Close', 'DOW JONES SMA20']]
+                                            'DOW JONES Close', 'DOW JONES SMA30', 
+                                            'S&P 500 Close', 'DOW JONES SMA30']]
         self.df_x_data = self.df_x_data.dropna()
 
     #Used to predict 
