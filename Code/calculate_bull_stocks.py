@@ -16,7 +16,7 @@ if __name__ == "__main__":
     predictor = svm_predictor.SVMPredictor()
     
     # Market indeces to be used for all stocks data
-    end_date = datetime.datetime.now() - datetime.timedelta(days=60)
+    end_date = datetime.datetime.now()
     start_date = end_date - datetime.timedelta(days=600)
     print(start_date)
     print(end_date)
