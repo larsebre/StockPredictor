@@ -14,6 +14,7 @@ count_true_pred = 0
 for i, ticker in enumerate(tickers):
     start_date = datetime.datetime.strptime(prediction_dates[i], '%Y-%m-%d')
     end_date = start_date + datetime.timedelta(days=30)
+    print(start_date)
     df_data = data.DataReader(ticker, 'yahoo', start_date, end_date)
     price_list = df_data['Adj Close'].tolist()
     change = (price_list[-1] - price_list[0]) / price_list[0]
