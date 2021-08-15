@@ -7,8 +7,9 @@ import plotly.graph_objects as go
 
 if __name__ == "__main__":
 
-    ticker = 'SASNO.OL'
-    sma = 10
+    # Change ticker and sma to get the right plot
+    ticker = 'PHO.OL'
+    sma = 20
 
     end_date = datetime.datetime.now()
     start_date = end_date - datetime.timedelta(days=20*sma)
