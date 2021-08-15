@@ -4,8 +4,7 @@ from pandas_datareader import data
 import yfinance as yf
 import pandas as pd
 import ta
-import os
-from slack import WebClienttou
+import send_slack_msg as ssm
 
 
 class StockMonitor:
@@ -16,26 +15,28 @@ class StockMonitor:
         self.df_stock = data.DataReader(self.ticker, 'yahoo', self.start_date, self.end_date)
         self.df_stock['SMA'] = ta.trend.SMAIndicator(close=self.df_stock['Adj Close'], window=sma).sma_indicator()
         self.sma = self.df_stock[['SMA']].dropna()
+        self.latest_price = None
+        self.latest_sma = None
 
     def get_under_sma(self):
-        latest_sma = self.sma.iloc[-1]['SMA']
+        self.latest_sma = self.sma.iloc[-1]['SMA']
         stock_data = yf.download(tickers=self.ticker, period='1t', interval='1m')
-        latest_price = stock_data.iloc[-1]['Close']
-        return (latest_price < latest_sma)
+        self.latest_price = stock_data.iloc[-1]['Close']
+        return (self.latest_price < self.latest_sma)
 
 
 if __name__ == "__main__":
     df_owning = pd.read_excel('owning_stocks.xlsx')
     
     # Loop through owned stocks to see if they are below their sma
-    below_stocks = []
+    message = 'ALERT:\n\n'
     for index, row in df_owning.iterrows():
         monitor = StockMonitor(row['TICKER'], row['SMA Length'])
         
         if (monitor.get_under_sma()):
-            below_stocks.append(row['TICKER'])
+            message += (row['TICKER'] + ' is under SMA' + str(row['SMA Length']) + ' (' + str(round(monitor.latest_price, 2)) + ' < ' + str(round(monitor.latest_sma, 2)) + ')\n')
         
         del monitor
         gc.collect()
 
-    print(below_stocks)
+    ssm.send_slack_message(message)
