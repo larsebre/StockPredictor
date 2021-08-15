@@ -5,6 +5,7 @@ import yfinance as yf
 import pandas as pd
 import ta
 import send_slack_msg as ssm
+import putenv
 
 
 class StockMonitor:
@@ -26,7 +27,8 @@ class StockMonitor:
 
 
 if __name__ == "__main__":
-    df_owning = pd.read_excel('owning_stocks.xlsx')
+    PATH = putenv.os.getenv('FILE_PATH')
+    df_owning = pd.read_excel(PATH)
     
     # Loop through owned stocks to see if they are below their sma
     message = 'ALERT:\n\n'

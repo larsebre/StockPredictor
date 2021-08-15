@@ -15,9 +15,9 @@ class StockMonitor:
 
     # Returns True/False if the stock price has exceeded the sma since yesterday (from under to above)
     def get_exceeded_sma(self):
-        condition_yesterday = (self.df_stock.iloc[-2]['Adj Close'] < self.df_stock.iloc[-2]['SMA'])
+        condition_past_week = (self.df_stock.iloc[-7]['Adj Close'] < self.df_stock.iloc[-7]['SMA'])
         condition_today = (self.df_stock.iloc[-1]['Adj Close'] > self.df_stock.iloc[-1]['SMA'])
-        return (condition_yesterday and condition_today)
+        return (condition_past_week and condition_today)
 
 
 if __name__ == "__main__":
