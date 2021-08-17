@@ -72,6 +72,17 @@ if __name__ == "__main__":
                                 loosing_trades.append(gain)
                             num_trades += 1
                         above_sma = False
+                # If the price is above sma the last day, we need to account for this gain
+                if (above_sma):
+                    gain = df_compare.iloc[-1]['Adj Close']/start_price_i
+                    stock_return *= gain
+                    if (gain > 1.0):
+                        num_increases += 1
+                        winning_trades.append(gain)
+                    else:
+                        loosing_trades.append(gain)
+                    num_trades += 1
+
                 if (num_trades == 0):
                     earning_percentage = None
                 else:
