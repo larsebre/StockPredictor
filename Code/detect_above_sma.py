@@ -1,10 +1,10 @@
-from Users.larseikbreirem.Desktop.StockPredictor.StockPredictor.Code.send_slack_msg import send_slack_message
 import datetime
 import gc
 from pandas_datareader import data
 import pandas as pd
 import ta
 import send_slack_msg as ssm
+import putenv
 
 
 class StockMonitor:
@@ -23,8 +23,10 @@ class StockMonitor:
 
 
 if __name__ == "__main__":
-    df_monitor = pd.read_excel('monitor_these_stocks.xlsx')
-    df_owning = pd.read_excel('owning_stocks.xlsx')
+    PATH_MONITORING = putenv.os.getenv('FILE_PATH_MONITORING')
+    PATH_OWNING = putenv.os.getenv('FILE_PATH_OWNING')
+    df_monitor = pd.read_excel(PATH_MONITORING)
+    df_owning = pd.read_excel(PATH_OWNING)
     df_monitor = pd.concat([df_monitor, df_owning]).drop_duplicates(keep=False)
     
     # Loop through monitored stocks that is not owned from before and see if they have exceeded their given sma

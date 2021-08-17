@@ -27,7 +27,7 @@ class StockMonitor:
 
 
 if __name__ == "__main__":
-    PATH = putenv.os.getenv('FILE_PATH')
+    PATH = putenv.os.getenv('FILE_PATH_OWNING')
     df_owning = pd.read_excel(PATH)
     
     # Loop through owned stocks to see if they are below their sma
