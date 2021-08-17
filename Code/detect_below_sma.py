@@ -31,7 +31,7 @@ if __name__ == "__main__":
     df_owning = pd.read_excel(PATH)
     
     # Loop through owned stocks to see if they are below their sma
-    message = 'ALERT:\n\n'
+    message = 'SELL SIGNAL:\n\n'
     for index, row in df_owning.iterrows():
         monitor = StockMonitor(row['TICKER'], row['SMA Length'])
         
@@ -41,4 +41,5 @@ if __name__ == "__main__":
         del monitor
         gc.collect()
 
-    ssm.send_slack_message(message)
+    if (message != 'SELL SIGNAL:\n\n'):
+        ssm.send_slack_message(message)
