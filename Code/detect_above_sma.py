@@ -47,7 +47,6 @@ if __name__ == "__main__":
     
     if (message != 'BUY SIGNAL:\n\n'):
         ssm.send_slack_message(message)
-    
-    ssm.send_slack_message('IT WORKED: DELETE THIS LINE')
+   
 
     
