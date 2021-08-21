@@ -17,4 +17,4 @@ Loops through every ticker in TICKERS.xlsx and reads the stock price data 700 da
 Reads from the Excel file "monitored_stocks.xlsx" (path hidden with environmental variable), where the most interesting trading stocks are stored together with their optimal SMA. The python file loops through these stocks and detects if the price has exceeded the SMA the past 3 days. If so, it alerts me on Slack what stocks have exceeded. This is nice to know as soon as possible since it is a buy signal for the trading strategy.
 
 ## detect_below_sma.py
-This file does the same thing as "detect_above_sma.py", but detects when a stock price goes under the optimal SMA. This signals a sell signal. It monitores just the stocks that I own my self. I am alerted on Slack if this happens.
+This file does the same thing as "detect_above_sma.py", but detects when a stock price goes under the optimal SMA. This signals a sell signal. It monitores just the stocks that I own my self. I am alerted on Slack if this happens.<img width="731" alt="Skjermbilde 2021-08-21 kl  11 48 58" src="https://user-images.githubusercontent.com/59867535/130318064-f10c8635-fbc1-40bc-924d-60f01a2154ae.png">
