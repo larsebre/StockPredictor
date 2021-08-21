@@ -10,10 +10,10 @@ if __name__ == "__main__":
     df_monitor = pd.read_excel('monitor_these_stocks.xlsx')
 
     # Change this if you want to plot single stock
-    plot_monitored_stocks = False 
+    plot_monitored_stocks = True
     # Change ticker and sma to get the right plot
-    ticker = ['VOLUE.OL']
-    sma = [10]
+    ticker = ['AKSO.OL']
+    sma = [31]
 
     if (plot_monitored_stocks):
         ticker = df_monitor['TICKER'].to_list()
