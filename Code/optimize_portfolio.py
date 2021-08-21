@@ -19,9 +19,9 @@ def expected_return(x, er):
 
 if __name__ == "__main__":
 
-    portfolio =     ['SNOR.OL', 'SBX.OL',   'YAR.OL',   'MPCC.OL',   'SSG.OL']
+    portfolio =     ['KOA.OL', 'MOWI.OL',   'YAR.OL',   'SCANA.OL',   'KAHOT.OL']
     # Expected return single stock
-    er = [0.05,       0.10,       0.05,       0.15,       0.10]
+    er = [0.20,       0.10,       0.05,       0.15,       0.40]
     # Expected portfolio return
     epf = 0.00
 
