@@ -1,6 +1,7 @@
 import datetime
 import gc
 from pandas_datareader import data
+from pandas_datareader._utils import RemoteDataError
 import pandas as pd
 import ta
 import send_slack_msg as ssm
@@ -31,14 +32,18 @@ if __name__ == "__main__":
     
     # Loop through monitored stocks that is not owned from before and see if they have exceeded their given sma
     exceeded_stocks = []
+    error_message = 'ERROR - Cant load data for:\n'
     for index, row in df_monitor.iterrows():
-        monitor = StockMonitor(row['TICKER'], row['SMA Length'])
-        
-        if (monitor.get_exceeded_sma()):
-            exceeded_stocks.append(row['TICKER'])
-        
-        del monitor
-        gc.collect()
+        try:
+            monitor = StockMonitor(row['TICKER'], row['SMA Length'])
+            
+            if (monitor.get_exceeded_sma()):
+                exceeded_stocks.append(row['TICKER'])
+            
+            del monitor
+            gc.collect()
+        except RemoteDataError:
+            error_message += row['TICKER'] + '\n'
 
     # Send Slack msg
     message = 'BUY SIGNAL:\n\n'
@@ -48,5 +53,7 @@ if __name__ == "__main__":
     if (message != 'BUY SIGNAL:\n\n'):
         ssm.send_slack_message(message)
    
+    if (error_message != 'ERROR - Cant load data for:\n'):
+        ssm.send_slack_message(error_message)
 
     

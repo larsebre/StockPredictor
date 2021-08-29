@@ -1,8 +1,10 @@
 import datetime
 import gc
 from pandas_datareader import data
+from pandas_datareader._utils import RemoteDataError
 import yfinance as yf
 import pandas as pd
+
 import ta
 import send_slack_msg as ssm
 import putenv
@@ -32,14 +34,22 @@ if __name__ == "__main__":
     
     # Loop through owned stocks to see if they are below their sma
     message = 'SELL SIGNAL:\n\n'
+    error_message = 'ERROR - Cant load data for:\n'
     for index, row in df_owning.iterrows():
-        monitor = StockMonitor(row['TICKER'], row['SMA Length'])
-        
-        if (monitor.get_under_sma()):
-            message += (row['TICKER'] + ' is under SMA' + str(row['SMA Length']) + ' (' + str(round(monitor.latest_price, 2)) + ' < ' + str(round(monitor.latest_sma, 2)) + ')\n')
-        
-        del monitor
-        gc.collect()
+        try:
+            monitor = StockMonitor(row['TICKER'], row['SMA Length'])
+            
+            if (monitor.get_under_sma()):
+                message += (row['TICKER'] + ' is under SMA' + str(row['SMA Length']) + ' (' + str(round(monitor.latest_price, 2)) + ' < ' + str(round(monitor.latest_sma, 2)) + ')\n')
+            
+            del monitor
+            gc.collect()
+        except RemoteDataError:
+            error_message += row['TICKER'] + '\n'
 
+    # Send Slack message
     if (message != 'SELL SIGNAL:\n\n'):
         ssm.send_slack_message(message)
+
+    if (error_message != 'ERROR - Cant load data for:\n'):
+        ssm.send_slack_message(error_message)
